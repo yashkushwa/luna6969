@@ -1,11 +1,11 @@
+// Initialize logger (patches console methods)
+require('./logger');
+
 const express = require('express');
 const fs = require('fs').promises; // Use promises version of fs
 const path = require('path');
-const { exec } = require('child_process');
-const { promisify } = require('util');
+const { exec, spawn } = require('child_process');
 const { ensureThumbnails, generateThumbnail } = require('./thumbnailGenerator'); // Import thumbnail generation function
-
-const execAsync = promisify(exec);
 
 // Middleware to parse JSON
 const app = express();
@@ -189,16 +189,26 @@ app.post('/api/generate-sprite/:id', async (req, res) => {
         const pythonCommand = `python spritepreview.py "${videoPath}"`;
         console.log(`Executing: ${pythonCommand}`);
         
-        const { stdout, stderr } = await execAsync(pythonCommand, {
-            cwd: __dirname,
-            timeout: 300000 // 5 minutes timeout
+                // Run python script and stream logs in real-time
+        await new Promise((resolve, reject) => {
+            const child = spawn('python', ['spritepreview.py', videoPath], {
+                cwd: __dirname,
+                stdio: ['ignore', 'pipe', 'pipe']
+            });
+
+            child.stdout.on('data', data => {
+                process.stdout.write(data); // forward to server console
+            });
+            child.stderr.on('data', data => {
+                process.stderr.write(data); // show errors live
+            });
+
+            child.on('error', reject);
+            child.on('close', code => {
+                if (code === 0) return resolve();
+                reject(new Error(`Python script exited with code ${code}`));
+            });
         });
-
-        if (stderr) {
-            console.warn(`Python script warnings: ${stderr}`);
-        }
-
-        console.log(`Python script output: ${stdout}`);
 
         // Check if the sprite and VTT files were created
         const baseName = path.parse(videoFile).name;

@@ -14,9 +14,10 @@
     "height": 180
   },
   "sprites": {
-    "thumbnailInterval": 5,
-    "thumbnailWidth": 320,
-    "thumbnailHeight": 180,
-    "thumbnailTimeout": 50
+    "spriteInterval": 5,
+    "spriteWidth": 320,
+    "spriteHeight": 180,
+    "spriteTimeout": 50,
+    "spriteWorkers": 20
   }
 }

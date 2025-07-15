@@ -1,3 +1,6 @@
+// Initialize logger (patches console methods)
+require('./logger');
+
 const ffmpeg = require('fluent-ffmpeg');
 const path = require('path');
 const fs = require('fs').promises; // Use promises version of fs
@@ -14,10 +17,10 @@ try {
             thumbnails: './thumbnails'
         },
         thumbnails: {
-            defaultThumbnailTime: '00:00:01',
+            defaultThumbnailTime: '00:00:25',
             quality: 2,
-            width: 320,
-            height: 180
+            width: 640,
+            height: 360
         }
     };
 }
