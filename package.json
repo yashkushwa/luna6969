@@ -1,6 +1,24 @@
 {
+  "name": "luna6969",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node dev.js",
+    "dev:vite": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "prod": "node start-prod.js",
+    "dev:server": "NODE_ENV=development node server.js"
+  },
   "dependencies": {
+    "@vitejs/plugin-react": "^4.7.0",
+    "axios": "^1.10.0",
     "express": "^5.1.0",
-    "fluent-ffmpeg": "^2.1.2"
+    "fluent-ffmpeg": "^2.1.2",
+    "plyr": "^3.7.8",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.7.0",
+    "vite": "^7.0.5"
   }
 }

@@ -37,10 +37,24 @@ app.use(express.json());
 app.use('/videos', express.static(VIDEOS_DIR));
 app.use('/thumbnails', express.static(THUMBNAILS_DIR));
 app.use('/processed', express.static(PROCESSED_DIR));
-app.use(express.static(path.join(__dirname, 'public')));
 
 // API routes
 app.use('/api', videoRoutes);
+
+// For development, serve the old public folder
+if (process.env.NODE_ENV !== 'production') {
+    app.use(express.static(path.join(__dirname, 'public')));
+}
+
+// For production, serve the built React app
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, 'dist')));
+    
+    // All other GET requests not handled before will return the React app
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+    });
+}
 
 // Start server
 app.listen(PORT, () => {
