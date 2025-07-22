@@ -507,8 +507,17 @@
 
         async function fetchVideos() {
             const res = await fetch('/api/videos');
-            videos = await res.json();
-            filteredVideos = videos;
+            const data = await res.json();
+            // Handle new API response format with pagination
+            if (data.videos) {
+                videos = data.videos;
+                filteredVideos = data.videos;
+                // TODO: Handle pagination in future updates
+            } else {
+                // Fallback for old API format
+                videos = data;
+                filteredVideos = data;
+            }
             renderVideos();
         }
 
